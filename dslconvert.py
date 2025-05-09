@@ -17,7 +17,7 @@ if uploaded_file:
         df = xls.parse(sheet, skiprows=1)
         df.dropna(how="all", inplace=True)
         df = df.dropna(axis=1, how="all")
-        df.columns = df.columns.map(str)  # Fix: ensure all column names are strings
+        df.columns = df.columns.map(str)  # Ensure column names are strings
         df["__sheet__"] = sheet
         all_data.append(df)
 
@@ -29,6 +29,7 @@ if uploaded_file:
 
         address_cols = [col for col in df.columns if "address" in col.lower()]
         status_cols = [col for col in df.columns if "status" in col.lower()]
+        tech_cols = [col for col in df.columns if "tech" in col.lower()]
 
         if address_cols:
             address_col = address_cols[0]
@@ -41,6 +42,12 @@ if uploaded_file:
             status_vals = df[status_col].dropna().unique().tolist()
             selected_status = st.multiselect(f"Filter by {status_col}", options=status_vals, default=status_vals)
             df = df[df[status_col].isin(selected_status)]
+
+        if tech_cols:
+            tech_col = tech_cols[0]
+            tech_vals = df[tech_col].dropna().unique().tolist()
+            selected_techs = st.multiselect(f"Filter by {tech_col}", options=tech_vals, default=tech_vals)
+            df = df[df[tech_col].isin(selected_techs)]
 
         st.markdown("### 📈 Filtered Results")
         st.dataframe(df)
