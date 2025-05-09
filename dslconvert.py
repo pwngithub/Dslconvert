@@ -17,7 +17,8 @@ if uploaded_file:
         df = xls.parse(sheet, skiprows=1)
         df.dropna(how="all", inplace=True)
         df = df.dropna(axis=1, how="all")
-        df["__sheet__"] = sheet  # Track source sheet
+        df.columns = df.columns.map(str)  # Fix: ensure all column names are strings
+        df["__sheet__"] = sheet
         all_data.append(df)
 
     if all_data:
